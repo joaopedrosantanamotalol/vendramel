@@ -1,63 +1,44 @@
 package com.vendramel.vendramel.base.domain.Services;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import com.vendramel.vendramel.base.domain.entidades.Pagamento;
 import com.vendramel.vendramel.base.domain.entidades.Pedido;
 import com.vendramel.vendramel.base.domain.interfaces.AplicarDescontoInterface;
 import com.vendramel.vendramel.base.domain.interfaces.PagamentoInterface;
 
+
 public class PagamentoService {
-    
-    private final AplicarDescontoInterface aplicardescontointer;
-    private final PagamentoInterface pagamentoiter;
 
-    public PagamentoService(AplicarDescontoInterface aplicardescontointer, PagamentoInterface pagamentoiter) {
-        this.aplicardescontointer = aplicardescontointer;
-        this.pagamentoiter = pagamentoiter;
+    private final AplicarDescontoInterface aplicarDesconto;
+    private final Map<String, PagamentoInterface> pagamentos;
+
+    public PagamentoService(
+        AplicarDescontoInterface aplicarDesconto,
+        Map<String, PagamentoInterface> pagamentos
+    ) {
+        this.aplicarDesconto = aplicarDesconto;
+        this.pagamentos = pagamentos;
     }
 
-    public Pagamento pagarviaPix(Pedido pedido){
+    public Pagamento pagar(
+        Pedido pedido,
+        String tipo,
+        int parcelas
+    ) { 
 
-       BigDecimal valortotal = pedido.getValorTotal();
+        PagamentoInterface estrategia = pagamentos.get(tipo);
 
-       BigDecimal valorComDesconto = aplicardescontointer.calcularDesconto(valortotal, "PIX", 1);
-       
-       pedido.setValorTotal(valorComDesconto);
-
-        try {
-            return pagamentoiter.pagarviaPix(pedido);
-        } finally {
-            pedido.setValorTotal(valortotal);
-    }
-
-    }
-
-    public Pagamento pagarviaCartao(Pedido pedido,int parcelas, String numeroCartao){
-
-    BigDecimal valorOriginal = pedido.getValorTotal();
-
-    BigDecimal valorComDesconto =
-            aplicardescontointer.calcularDesconto(
-                    valorOriginal,
-                    "CARTAO",
-                    parcelas
+        if (estrategia == null) {
+            throw new IllegalArgumentException(
+                "Forma de pagamento inválida"
             );
+        }
 
-    pedido.setValorTotal(valorComDesconto);
+        BigDecimal valorOriginal = pedido.getValorTotal();
+        BigDecimal valorFinal = aplicarDesconto.calcularDesconto(valorOriginal, tipo, parcelas);
 
-    try {
-        return pagamentoiter.pagarviaCartao(
-                pedido,
-                parcelas,
-                numeroCartao
-        );
-    } finally {
-        pedido.setValorTotal(valorOriginal);
+            return estrategia.pagar(pedido, valorFinal);
     }
-
-    }
-
-
-
 }
