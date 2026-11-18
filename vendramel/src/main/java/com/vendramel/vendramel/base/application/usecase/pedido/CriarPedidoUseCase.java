@@ -1,6 +1,5 @@
 package com.vendramel.vendramel.base.application.usecase.pedido;
 
-import com.vendramel.vendramel.base.domain.Services.PedidoService;
 import com.vendramel.vendramel.base.domain.entidades.Cliente;
 import com.vendramel.vendramel.base.domain.entidades.Endereco;
 import com.vendramel.vendramel.base.domain.entidades.Pedido;
