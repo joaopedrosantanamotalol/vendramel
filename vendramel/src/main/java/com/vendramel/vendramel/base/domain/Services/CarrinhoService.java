@@ -19,8 +19,14 @@ public class CarrinhoService {
         return inter.visualizarCarrinho(idCliente);
     }
 
-    public Carrinho alterarQuantidade(int idItem){
-        return inter.alterarQuantidade(idItem);
+    public Carrinho alterarQuantidade(int idItem, int quantidade) {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException(
+                "A quantidade deve ser maior que zero."
+            );
+        }
+
+        return inter.alterarQuantidade(idItem, quantidade);
     }
 
     public void removerItem(int idCarrinho){

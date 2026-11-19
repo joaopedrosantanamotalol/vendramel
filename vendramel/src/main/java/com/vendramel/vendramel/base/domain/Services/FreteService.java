@@ -1,5 +1,6 @@
 package com.vendramel.vendramel.base.domain.Services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.vendramel.vendramel.base.domain.entidades.Endereco;
@@ -15,8 +16,11 @@ public class FreteService {
     }
 
 
-   public void calculcarFrete(Endereco endereco, List<ItemCarrinho> itens){
-        inter.calculcarFrete(endereco, itens);
-   }
+    public BigDecimal calcularFrete(
+            Endereco endereco,
+            List<ItemCarrinho> itens) {
+
+        return inter.calcularFrete(endereco, itens);
+    }
 
 }

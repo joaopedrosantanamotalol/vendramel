@@ -4,6 +4,7 @@ public class ItemCarrinho {
 
     private int id;
     private int quantidade;
+    
     public int getId() {
         return id;
     }

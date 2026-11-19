@@ -1,41 +1,58 @@
 package com.vendramel.vendramel.base.application.usecase.pagamento;
 
+import java.math.BigDecimal;
+
 import com.vendramel.vendramel.base.domain.Services.PagamentoService;
 import com.vendramel.vendramel.base.domain.Services.PedidoService;
 import com.vendramel.vendramel.base.domain.entidades.Pagamento;
 import com.vendramel.vendramel.base.domain.entidades.Pedido;
 
 public class CriarPagamentoUseCase {
-    
-    private final PedidoService service;
-    private final PagamentoService pagamentoService;
 
-    public CriarPagamentoUseCase(PagamentoService pagamentoService,PedidoService service) {
+    private final PedidoService pedidoService;
+    private final PagamentoService pagamentoService;
+    private final CalcularDescontoUseCase calcularDescontoUseCase;
+
+    public CriarPagamentoUseCase(
+        PedidoService pedidoService,
+        PagamentoService pagamentoService,
+        CalcularDescontoUseCase calcularDescontoUseCase
+    ) {
+        this.pedidoService = pedidoService;
         this.pagamentoService = pagamentoService;
-        this.service = service;
+        this.calcularDescontoUseCase = calcularDescontoUseCase;
     }
 
-     public Pagamento executar(
+    public Pagamento executar(
         int pedidoId,
         String tipo,
         int parcelas
     ) {
 
-        Pedido ped = service.buscarPorId(pedidoId);
+        Pedido pedido = pedidoService.buscarPorId(pedidoId);
 
-        if(ped == null){
-            throw new RuntimeException("não existe pedido com esse id!");
+        if (pedido == null) {
+            throw new RuntimeException("Pedido inexistente.");
         }
 
-        if(ped.getStatus() == null || ped.getStatus().equals("concluido")){
-            throw new RuntimeException(  "Não é possível realizar pagamento de um pedido concluído ou inesistente!");
+        if (pedido.getStatus() == null ||
+            pedido.getStatus().equalsIgnoreCase("concluido")) {
+            throw new RuntimeException(
+                "Não é possível pagar um pedido concluído."
+            );
         }
 
-        return pagamentoService.pagar(
-            ped,
+        BigDecimal valorFinal = calcularDescontoUseCase.executar(
+            pedido.getValorTotal(),
             tipo,
             parcelas
         );
-    }
 
+        return pagamentoService.pagar(
+            pedido,
+            tipo,
+            parcelas,
+            valorFinal
+        );
+    }
 }
