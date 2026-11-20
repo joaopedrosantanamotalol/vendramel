@@ -135,8 +135,6 @@ public class PedidoImp implements PedidoInterface {
 
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
 
-        // Limpa os itens do carrinho após salvar o pedido.
-        itemCarrinhoRepository.deleteAll(itensCarrinho);
 
         return PedidoMapper.paraDominio(pedidoSalvo);
     }

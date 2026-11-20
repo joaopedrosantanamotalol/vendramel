@@ -27,5 +27,8 @@ public class LivroService {
         return inter.buscarPorid(id);
     }
 
+    public Livro cadastrar(Livro livro) {
+    return inter.cadastrar(livro);
+}
 
 }

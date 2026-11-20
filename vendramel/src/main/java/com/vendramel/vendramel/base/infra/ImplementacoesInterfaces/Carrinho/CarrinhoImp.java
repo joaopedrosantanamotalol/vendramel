@@ -71,10 +71,13 @@ public class CarrinhoImp implements CarrinhoInterface {
 
     @Override
     public void destruirItens(int idCarrinho) {
+        System.out.println(">>> DESTRUINDO ITENS DO CARRINHO: " + idCarrinho);
 
-        var itens = itemCarrinhoRepository.findAllByCarrinho_Id(idCarrinho);
+        itemCarrinhoRepository.excluirPorCarrinhoId(idCarrinho);
 
-        itemCarrinhoRepository.deleteAll(itens);
+        itemCarrinhoRepository.flush();
+
+        System.out.println(">>> ITENS DO CARRINHO EXCLUÍDOS");
     }
     
 }

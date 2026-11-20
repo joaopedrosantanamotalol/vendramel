@@ -5,40 +5,40 @@ import java.util.Map;
 
 import com.vendramel.vendramel.base.domain.entidades.Pagamento;
 import com.vendramel.vendramel.base.domain.entidades.Pedido;
-import com.vendramel.vendramel.base.domain.interfaces.AplicarDescontoInterface;
 import com.vendramel.vendramel.base.domain.interfaces.PagamentoInterface;
 
 public class PagamentoService {
 
-    private final AplicarDescontoInterface aplicarDesconto;
     private final Map<String, PagamentoInterface> pagamentos;
 
-    public PagamentoService(
-        AplicarDescontoInterface aplicarDesconto,
-        Map<String, PagamentoInterface> pagamentos
-    ) {
-        this.aplicarDesconto = aplicarDesconto;
+    public PagamentoService(Map<String, PagamentoInterface> pagamentos) {
         this.pagamentos = pagamentos;
     }
 
     public Pagamento pagar(
-        Pedido pedido,
-        String tipo,
-        int parcelas,
-        BigDecimal valorFinal
-    ) {
+            Pedido pedido,
+            String tipo,
+            int parcelas,
+            BigDecimal valorFinal) {
+
+        if (tipo == null || tipo.isBlank()) {
+            throw new IllegalArgumentException("Informe a forma de pagamento.");
+        }
 
         PagamentoInterface estrategia = pagamentos.get(tipo.toUpperCase());
 
         if (estrategia == null) {
-            throw new IllegalArgumentException(
-                "Forma de pagamento inválida."
-            );
+            throw new IllegalArgumentException("Forma de pagamento inválida.");
         }
 
         Pagamento pagamento = estrategia.pagar(pedido, valorFinal);
 
         pagamento.setParcelas(parcelas);
+
+        if ("CONFIRMADO".equalsIgnoreCase(pagamento.getStatus())
+                || "AUTORIZADO".equalsIgnoreCase(pagamento.getStatus())) {
+            pagamento.setStatus("APROVADO");
+        }
 
         return pagamento;
     }

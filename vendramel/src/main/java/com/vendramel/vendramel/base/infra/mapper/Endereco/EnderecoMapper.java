@@ -22,4 +22,23 @@ public class EnderecoMapper {
 
         return dominio;
     }
+
+    public static com.vendramel.vendramel.base.infra.entidadesFrameWork.Endereco paraEntidade(
+            com.vendramel.vendramel.base.domain.entidades.Endereco endereco) {
+
+        if (endereco == null) {
+            return null;
+        }
+
+        var entidade = new com.vendramel.vendramel.base.infra.entidadesFrameWork.Endereco();
+
+        entidade.setLogradouro(endereco.getLogradouro());
+        entidade.setNumero(endereco.getNumero());
+        entidade.setBairro(endereco.getBairro());
+        entidade.setCidade(endereco.getCidade());
+        entidade.setUf(endereco.getUf());
+        entidade.setCep(endereco.getCep());
+
+        return entidade;
+    }
 }

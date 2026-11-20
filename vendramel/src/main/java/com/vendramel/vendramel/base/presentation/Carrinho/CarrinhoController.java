@@ -1,5 +1,6 @@
 package com.vendramel.vendramel.base.presentation.Carrinho;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class CarrinhoController {
             @PathVariable int idCliente) {
 
         return ResponseEntity.ok(
-                carrinhoService.vizualizarItem(idCliente)
+                carrinhoService.visualizarCarrinho(idCliente)
         );
     }
 
@@ -65,4 +66,26 @@ public class CarrinhoController {
 
         return ResponseEntity.noContent().build();
     }
+
+
+@PostMapping("/itens")
+public ResponseEntity<Carrinho> adicionarItem(
+        @RequestBody AdicionarItemRequest request) {
+
+    Carrinho carrinho = carrinhoService.adicionarItem(
+        request.idCliente(),
+        request.idLivro(),
+        request.quantidade()
+    );
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(carrinho);
+}
+
+public record AdicionarItemRequest(
+    int idCliente,
+    int idLivro,
+    int quantidade
+) {}
+
+
 }

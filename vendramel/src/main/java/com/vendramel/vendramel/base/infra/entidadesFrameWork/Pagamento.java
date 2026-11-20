@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity(name = "Pagamento")
 public class Pagamento {
@@ -31,6 +33,10 @@ public class Pagamento {
 
     @Column(nullable = false)
     private LocalDateTime dataPagamento;
+
+    @ManyToOne
+    @JoinColumn(name = "pedido_id", nullable = false)
+    private Pedido pedido;
 
     public int getId() {
         return id;
@@ -67,6 +73,12 @@ public class Pagamento {
     }
     public void setDataPagamento(LocalDateTime dataPagamento) {
         this.dataPagamento = dataPagamento;
+    }
+    public Pedido getPedido() {
+        return pedido;
+    }
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     

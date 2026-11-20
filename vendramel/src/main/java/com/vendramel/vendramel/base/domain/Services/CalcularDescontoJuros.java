@@ -38,7 +38,7 @@ public class CalcularDescontoJuros implements AplicarDescontoInterface {
 
         switch (tipo.toUpperCase()) {
 
-            case "CARTÃO":
+            case "CARTAO":
 
                 if (parcelas == 1) {
                     valorFinal = valorOriginal.multiply(
